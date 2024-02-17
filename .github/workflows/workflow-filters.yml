@@ -30,3 +30,8 @@ jobs:
               run: |
                 PR_NUMBER=$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")
                 echo "PR Number: $PR_NUMBER"
+
+            - name: Dump GitHub context
+              env:
+                GITHUB_CONTEXT: ${{ toJson(github) }}
+              run: echo "$GITHUB_CONTEXT"
