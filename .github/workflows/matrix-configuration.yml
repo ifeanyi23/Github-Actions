@@ -6,29 +6,53 @@ on:
       - 'feature/*' #HI
 
 jobs:
+    get-matrix:
+      runs-on: ubuntu-latest
+      outputs:
+        matrix: ${{ steps.set-matrix.outputs.matrix }}
+      steps:
+        - id: set-matrix
+          run: echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
+        - name: Dump steps context
+          env:
+            STEPS_CONTEXT: ${{ toJson(steps) }}
+          run: echo "$STEPS_CONTEXT"
     deploy-on-ubuntu:
-        strategy:
-            max-parallel: 2 
-            matrix:
-                os: [ubuntu-latest, ubuntu-20.04, windows-latest]
-                images: [hello-world, alpine]
-                exclude:
-                    - images: alpine
-                      os: windows-latest
-                include:
-                    - images: amd64/alpine
-                      os: ubuntu-20.04
-        runs-on: ${{matrix.os}}
-        steps:
-            - name: Echo Docker Details
-              run: docker info
+        strategy: ${{ fromJSON(needs.get-matrix.outputs.matrix) }}
 
-            - name: Run Image on ${{matrix.os}}
-              run: docker run ${{matrix.images}}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Echo Get get matrix deets
+              run: echo "Matrix - Project ${{ matrix.project }}, Config ${{ matrix.config }}"
 
             - name: Dump matrix context
               env:
                 MATRIX_CONTEXT: ${{ toJson(matrix) }}
               run: echo "$MATRIX_CONTEXT"
+# jobs:
+#     deploy-on-ubuntu:
+#         strategy:
+#             max-parallel: 2 
+#             matrix:
+#                 os: [ubuntu-latest, ubuntu-20.04, windows-latest]
+#                 images: [hello-world, alpine]
+#                 exclude:
+#                     - images: alpine
+#                       os: windows-latest
+#                 include:
+#                     - images: amd64/alpine
+#                       os: ubuntu-20.04
+#         runs-on: ${{matrix.os}}
+#         steps:
+#             - name: Echo Docker Details
+#               run: docker info
+
+#             - name: Run Image on ${{matrix.os}}
+#               run: docker run ${{matrix.images}}
+
+#             - name: Dump matrix context
+#               env:
+#                 MATRIX_CONTEXT: ${{ toJson(matrix) }}
+#               run: echo "$MATRIX_CONTEXT"
 
     
