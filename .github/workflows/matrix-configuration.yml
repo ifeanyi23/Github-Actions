@@ -25,4 +25,9 @@ jobs:
             - name: Run Image on ${{matrix.os}}
               run: docker run ${{matrix.images}}
 
+            - name: Dump matrix context
+              env:
+                MATRIX_CONTEXT: ${{ toJson(matrix) }}
+              run: echo "$MATRIX_CONTEXT
+
     
