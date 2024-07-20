@@ -18,6 +18,7 @@ jobs:
             STEPS_CONTEXT: ${{ toJson(steps) }}
           run: echo "$STEPS_CONTEXT"
     deploy-on-ubuntu:
+        needs: get-matrix
         strategy: 
           matrix: ${{ fromJSON(needs.get-matrix.outputs.matrix) }}
 
