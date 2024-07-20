@@ -1,6 +1,9 @@
 name: Matrix Configuration
 
-on: push
+on: 
+  push:
+    branches:
+      - 'feature/*'
 
 jobs:
     deploy-on-ubuntu:
