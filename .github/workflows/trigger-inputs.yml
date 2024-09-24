@@ -1,6 +1,9 @@
 name: Triggered Workflow with Various Inputs
 
+
 on:
+    pull_request:
+        branches: [main]
     workflow_dispatch:
         inputs:
             run-tests:
